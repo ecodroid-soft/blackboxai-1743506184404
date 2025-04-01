@@ -33,6 +33,7 @@ foreach ($todayResults as $result) {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -140,5 +141,11 @@ foreach ($todayResults as $result) {
         </div>
     </div>
     <script src="script.js"></script>
+    <script>
+        // Initialize GSAP animations
+        gsap.config({
+            nullTargetWarn: false
+        });
+    </script>
 </body>
 </html>
