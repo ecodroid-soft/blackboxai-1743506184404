@@ -98,6 +98,9 @@ $pendingCount = count($games) - $todayCount;
                     <a href="manage_games.php" class="text-gray-300 hover:text-white transition">
                         <i class="fas fa-gamepad mr-2"></i>Manage Games
                     </a>
+                    <a href="manage_sheets.php" class="text-gray-300 hover:text-white transition">
+                        <i class="fas fa-table mr-2"></i>Historical Results
+                    </a>
                 </div>
                 <div class="flex items-center space-x-4">
                     <a href="profile.php" class="text-gray-300 hover:text-white transition">
@@ -236,7 +239,7 @@ $pendingCount = count($games) - $todayCount;
                             <?php foreach ($historicalResults as $result): ?>
                             <tr class="border-b border-gray-700">
                                 <td class="px-4 py-2"><?php echo htmlspecialchars($result['date']); ?></td>
-                                <td class="px-4 py-2"><?php echo htmlspecialchars($result['game']); ?></td>
+                            <td class="px-4 py-2"><?php echo htmlspecialchars($result['display_name']); ?></td>
                                 <td class="px-4 py-2 font-bold text-yellow-500"><?php echo htmlspecialchars($result['number']); ?></td>
                                 <td class="px-4 py-2"><?php echo htmlspecialchars($result['time']); ?></td>
                                 <td class="px-4 py-2">
