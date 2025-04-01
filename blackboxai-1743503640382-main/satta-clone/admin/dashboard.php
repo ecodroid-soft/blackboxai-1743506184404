@@ -152,7 +152,7 @@ $pendingCount = count($games) - $todayCount;
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-400 text-sm">Active Games</p>
-                        <h3 class="text-2xl font-bold"><?php echo count($allGames); ?></h3>
+                        <h3 class="text-2xl font-bold"><?php echo count($games); ?></h3>
                     </div>
                     <div class="text-purple-500 text-2xl">
                         <i class="fas fa-gamepad"></i>
@@ -177,65 +177,79 @@ $pendingCount = count($games) - $todayCount;
         <!-- Add Result Form -->
         <div class="bg-gray-800 rounded-lg p-6 mb-8">
             <h2 class="text-xl font-bold mb-6">Add New Result</h2>
-            <form method="POST" action="" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="block text-gray-400 mb-2">Game</label>
-                        <select name="game_id" required class="w-full bg-gray-700 rounded-lg px-4 py-2 text-white">
-                            <?php foreach ($games as $game): ?>
-                            <option value="<?php echo $game['id']; ?>"><?php echo $game['display_name']; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 mb-2">Number</label>
-                        <input type="number" name="number" required min="0" max="99"
-                               class="w-full bg-gray-700 rounded-lg px-4 py-2 text-white">
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 mb-2">Time</label>
-                        <input type="time" name="time" required
-                               class="w-full bg-gray-700 rounded-lg px-4 py-2 text-white">
-                    </div>
+            <?php if (empty($games)): ?>
+                <div class="bg-yellow-500 text-white p-4 rounded-lg mb-6">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    No active games found. Please <a href="manage_games.php" class="underline">add some games</a> first.
                 </div>
-                <button type="submit" 
-                        class="bg-blue-600 text-white rounded-lg py-2 px-6 hover:bg-blue-700 transition duration-200">
-                    Add Result
-                </button>
-            </form>
+            <?php else: ?>
+                <form method="POST" action="" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-gray-400 mb-2">Game</label>
+                            <select name="game_id" required class="w-full bg-gray-700 rounded-lg px-4 py-2 text-white">
+                                <?php foreach ($games as $game): ?>
+                                <option value="<?php echo $game['id']; ?>"><?php echo $game['display_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Number</label>
+                            <input type="number" name="number" required min="0" max="99"
+                                   class="w-full bg-gray-700 rounded-lg px-4 py-2 text-white">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Time</label>
+                            <input type="time" name="time" required
+                                   class="w-full bg-gray-700 rounded-lg px-4 py-2 text-white">
+                        </div>
+                    </div>
+                    <button type="submit" 
+                            class="bg-blue-600 text-white rounded-lg py-2 px-6 hover:bg-blue-700 transition duration-200">
+                        Add Result
+                    </button>
+                </form>
+            <?php endif; ?>
         </div>
 
         <!-- Historical Results -->
         <div class="bg-gray-800 rounded-lg p-6">
             <h2 class="text-xl font-bold mb-6">Historical Results</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-gray-700">
-                            <th class="px-4 py-2 text-left">Date</th>
-                            <th class="px-4 py-2 text-left">Game</th>
-                            <th class="px-4 py-2 text-left">Number</th>
-                            <th class="px-4 py-2 text-left">Time</th>
-                            <th class="px-4 py-2 text-left">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($historicalResults as $result): ?>
-                        <tr class="border-b border-gray-700">
-                            <td class="px-4 py-2"><?php echo htmlspecialchars($result['date']); ?></td>
-                            <td class="px-4 py-2"><?php echo htmlspecialchars($result['game']); ?></td>
-                            <td class="px-4 py-2 font-bold text-yellow-500"><?php echo htmlspecialchars($result['number']); ?></td>
-                            <td class="px-4 py-2"><?php echo htmlspecialchars($result['time']); ?></td>
-                            <td class="px-4 py-2">
-                                <span class="px-2 py-1 rounded-full bg-green-500 text-xs">
-                                    <?php echo htmlspecialchars($result['status']); ?>
-                                </span>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+            <?php if (empty($historicalResults)): ?>
+                <div class="text-center py-8 text-gray-400">
+                    <i class="fas fa-history text-4xl mb-4"></i>
+                    <p>No historical results found. Results will appear here after you add them.</p>
+                </div>
+            <?php else: ?>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-700">
+                                <th class="px-4 py-2 text-left">Date</th>
+                                <th class="px-4 py-2 text-left">Game</th>
+                                <th class="px-4 py-2 text-left">Number</th>
+                                <th class="px-4 py-2 text-left">Time</th>
+                                <th class="px-4 py-2 text-left">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($historicalResults as $result): ?>
+                            <tr class="border-b border-gray-700">
+                                <td class="px-4 py-2"><?php echo htmlspecialchars($result['date']); ?></td>
+                                <td class="px-4 py-2"><?php echo htmlspecialchars($result['game']); ?></td>
+                                <td class="px-4 py-2 font-bold text-yellow-500"><?php echo htmlspecialchars($result['number']); ?></td>
+                                <td class="px-4 py-2"><?php echo htmlspecialchars($result['time']); ?></td>
+                                <td class="px-4 py-2">
+                                    <span class="px-2 py-1 rounded-full bg-green-500 text-xs">
+                                        <?php echo htmlspecialchars($result['status']); ?>
+                                    </span>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
