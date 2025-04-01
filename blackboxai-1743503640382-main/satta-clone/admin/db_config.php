@@ -39,8 +39,13 @@ class GameManager {
             $query = "INSERT INTO games (name, display_name, time_slot) VALUES (:name, :display_name, :time_slot)";
             $stmt = $this->conn->prepare($query);
             
-            $stmt->bindParam(":name", strtolower($name));
-            $stmt->bindParam(":display_name", strtoupper($display_name));
+            // Convert values before binding
+            $name_lower = strtolower($name);
+            $display_name_upper = strtoupper($display_name);
+            
+            // Bind parameters
+            $stmt->bindParam(":name", $name_lower);
+            $stmt->bindParam(":display_name", $display_name_upper);
             $stmt->bindParam(":time_slot", $time_slot);
             
             return $stmt->execute();
@@ -69,8 +74,13 @@ class GameManager {
             $query = "UPDATE games SET status = :status WHERE id = :id";
             $stmt = $this->conn->prepare($query);
             
-            $stmt->bindParam(":status", $status);
-            $stmt->bindParam(":id", $id);
+            // Convert values before binding
+            $status_value = strval($status);
+            $id_value = intval($id);
+            
+            // Bind parameters
+            $stmt->bindParam(":status", $status_value);
+            $stmt->bindParam(":id", $id_value, PDO::PARAM_INT);
             
             return $stmt->execute();
         } catch(PDOException $e) {
@@ -98,10 +108,17 @@ class ResultManager {
             
             $stmt = $this->conn->prepare($query);
             
-            $stmt->bindParam(":game_id", $game_id);
-            $stmt->bindParam(":number", $number);
-            $stmt->bindParam(":date", $date);
-            $stmt->bindParam(":time", $time);
+            // Convert values before binding
+            $game_id_value = intval($game_id);
+            $number_value = intval($number);
+            $date_value = strval($date);
+            $time_value = strval($time);
+            
+            // Bind parameters
+            $stmt->bindParam(":game_id", $game_id_value, PDO::PARAM_INT);
+            $stmt->bindParam(":number", $number_value, PDO::PARAM_INT);
+            $stmt->bindParam(":date", $date_value);
+            $stmt->bindParam(":time", $time_value);
             
             return $stmt->execute();
         } catch(PDOException $e) {
@@ -131,14 +148,23 @@ class ResultManager {
     // Get historical results
     public function getHistoricalResults($limit = 100) {
         try {
-            $query = "SELECT r.*, g.name, g.display_name 
+            $query = "SELECT 
+                        r.date,
+                        g.display_name,
+                        r.number,
+                        r.time,
+                        COALESCE(r.status, 'WIN') as status
                      FROM results r 
                      JOIN games g ON r.game_id = g.id 
                      ORDER BY r.date DESC, r.time DESC 
                      LIMIT :limit";
             
             $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
+            
+            // Convert and bind limit parameter
+            $limit_value = intval($limit);
+            $stmt->bindParam(":limit", $limit_value, PDO::PARAM_INT);
+            
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch(PDOException $e) {
