@@ -1,3 +1,25 @@
+// Game-wise results functionality
+function showGameResults(gameName) {
+    // Hide all game results
+    document.querySelectorAll('.game-results').forEach(div => {
+        div.classList.remove('active');
+    });
+    
+    // Show selected game results
+    const selectedResults = document.getElementById(`results-${gameName}`);
+    if (selectedResults) {
+        selectedResults.classList.add('active');
+    }
+    
+    // Update tab styling
+    document.querySelectorAll('.game-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.trim() === gameName) {
+            tab.classList.add('active');
+        }
+    });
+}
+
 // Utility functions
 const formatTime = date => {
     return date.toLocaleTimeString('en-US', { 
@@ -39,7 +61,7 @@ const showError = (message) => {
                 <p class="text-lg mb-2">Oops! We're having trouble fetching the latest results.</p>
                 <p class="text-gray-400 mb-4">Don't worry, we're working on it! Please try again in a few moments.</p>
             </div>
-            <button onclick="retryFetch()" class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors flex items-center gap-2">
+            <button onclick="retryFetch()" class="retry-button">
                 <i class="fas fa-sync-alt"></i>
                 Try Again
             </button>
@@ -143,20 +165,15 @@ const updateResultCard = (card, result) => {
     }
 };
 
-// Handle historical results table
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    // Make date cells sticky on horizontal scroll
-    const sheetsTable = document.querySelector('.sheets-table');
-    if (sheetsTable) {
-        sheetsTable.addEventListener('scroll', () => {
-            const dateCells = document.querySelectorAll('.date-cell');
-            dateCells.forEach(cell => {
-                cell.style.transform = `translateX(${sheetsTable.scrollLeft}px)`;
-            });
-        });
+    // Show first game's results by default
+    const firstGameTab = document.querySelector('.game-tab');
+    if (firstGameTab) {
+        firstGameTab.click();
     }
 
-    // Initialize
+    // Initialize results fetching
     fetchResults();
     updateNextUpdateTime();
 });
