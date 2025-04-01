@@ -1,17 +1,22 @@
 <?php
 require_once 'admin/db_config.php';
+require_once 'admin/sheets_manager.php';
 
 // Initialize database connection
 $database = new Database();
 $db = $database->getConnection();
 $gameManager = new GameManager($db);
 $resultManager = new ResultManager($db);
+$sheetsManager = new SheetsManager($db);
 
 // Get all active games
 $games = $gameManager->getAllGames();
 
 // Get today's results
 $todayResults = $resultManager->getTodayResults();
+
+// Get 30 days historical results
+$historicalResults = $sheetsManager->getLastThirtyDaysResults();
 
 // Format results for display
 $formattedResults = [];
@@ -33,7 +38,6 @@ foreach ($todayResults as $result) {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -101,6 +105,46 @@ foreach ($todayResults as $result) {
                     </div>
                 </div>
 
+                <!-- Historical Results in Google Sheets Style -->
+                <div class="sheets-results">
+                    <h3>📊 LAST 30 DAYS RECORD</h3>
+                    <div class="sheets-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>DATE</th>
+                                    <?php foreach ($games as $game): ?>
+                                    <th><?php echo htmlspecialchars($game['display_name']); ?></th>
+                                    <?php endforeach; ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($historicalResults as $date => $dayResults): ?>
+                                <tr>
+                                    <td class="date-cell"><?php echo $date; ?></td>
+                                    <?php 
+                                    foreach ($games as $game) {
+                                        $result = array_filter($dayResults, function($r) use ($game) {
+                                            return $r['game'] === $game['display_name'];
+                                        });
+                                        $result = reset($result);
+                                        echo '<td class="number-cell">';
+                                        if ($result) {
+                                            echo '<span class="result-number">' . htmlspecialchars($result['number']) . '</span>';
+                                            echo '<span class="result-time">' . htmlspecialchars($result['time']) . '</span>';
+                                        } else {
+                                            echo '--';
+                                        }
+                                        echo '</td>';
+                                    }
+                                    ?>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div class="holi-section">
                     <h3>【HOLI DHAMAK】</h3>
                     <p>FARIDABAD | GAZIYABAD | GALI | DS</p>
@@ -141,11 +185,5 @@ foreach ($todayResults as $result) {
         </div>
     </div>
     <script src="script.js"></script>
-    <script>
-        // Initialize GSAP animations
-        gsap.config({
-            nullTargetWarn: false
-        });
-    </script>
 </body>
 </html>
