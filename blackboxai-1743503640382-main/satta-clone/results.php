@@ -12,6 +12,10 @@ try {
     // Get all active games
     $games = $gameManager->getAllGames();
     
+    if (empty($games)) {
+        throw new Exception('No active games found');
+    }
+    
     // Get today's results
     $todayResults = $resultManager->getTodayResults();
     
@@ -41,20 +45,25 @@ try {
         ];
     }, $historicalResults);
     
+    // Format games data
+    $formattedGames = array_map(function($game) {
+        return [
+            'name' => $game['name'],
+            'display_name' => $game['display_name'],
+            'time_slot' => date('h:i A', strtotime($game['time_slot'])),
+            'status' => $game['status']
+        ];
+    }, $games);
+    
     // Prepare response
     $response = [
         'date' => date('Y-m-d'),
         'results' => $formattedResults,
         'historical' => $formattedHistorical,
-        'games' => array_map(function($game) {
-            return [
-                'name' => $game['name'],
-                'display_name' => $game['display_name'],
-                'time_slot' => date('h:i A', strtotime($game['time_slot']))
-            ];
-        }, $games),
+        'games' => $formattedGames,
         'status' => 'success',
-        'message' => 'Results fetched successfully'
+        'message' => 'Results fetched successfully',
+        'next_update' => date('h:i A', strtotime('+5 minutes'))
     ];
     
     // Send JSON response
