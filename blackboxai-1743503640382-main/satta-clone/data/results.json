@@ -1,0 +1,30 @@
+{
+    "faridabad": {
+        "name": "FARIDABAD",
+        "time": "18:00",
+        "result": "78",
+        "status": "WIN",
+        "date": "2025-04-01"
+    },
+    "gaziyabad": {
+        "name": "GAZIYABAD",
+        "time": "8:00 PM",
+        "result": "72",
+        "status": "WIN",
+        "date": "2025-04-01"
+    },
+    "gali": {
+        "name": "GALI",
+        "time": "11:00 PM",
+        "result": "89",
+        "status": "WIN",
+        "date": "2025-04-01"
+    },
+    "ds": {
+        "name": "DS",
+        "time": "4:00 PM",
+        "result": "34",
+        "status": "WIN",
+        "date": "2025-04-01"
+    }
+}
