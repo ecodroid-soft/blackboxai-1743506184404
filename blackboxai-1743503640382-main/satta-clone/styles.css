@@ -297,16 +297,32 @@ body {
     font-weight: bold;
     text-transform: uppercase;
     margin-top: 10px;
+    transition: all 0.3s ease;
 }
 
-.status i {
+.result-card .status i {
     font-size: 16px;
+    transition: transform 0.3s ease;
 }
 
 .result-card .status.win {
     background: linear-gradient(45deg, #00cc00, #009900);
     color: #fff;
     box-shadow: 0 2px 10px rgba(0,204,0,0.3);
+}
+
+.result-card .status.pending {
+    background: linear-gradient(45deg, #ffa500, #ff8c00);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(255,165,0,0.3);
+}
+
+.result-card .status:hover {
+    transform: translateY(-2px);
+}
+
+.result-card .status:hover i {
+    transform: rotate(360deg);
 }
 
 /* Next Update Timer */
@@ -443,6 +459,14 @@ body {
         transparent
     );
     animation: loading-shimmer 1.5s infinite;
+}
+
+.number-display.loading .number {
+    color: transparent;
+    background: linear-gradient(90deg, #333, #444);
+    background-clip: text;
+    -webkit-background-clip: text;
+    animation: pulse 1.5s infinite;
 }
 
 @keyframes loading-shimmer {
